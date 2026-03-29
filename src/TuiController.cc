@@ -17,6 +17,7 @@ TuiController::TuiController() {
   // Clear();
   m_cmdwin.SetBufStr("Command:");
   m_statuswin.SetBufStr("Status:");
+  m_valuewin.SetBufStr("Value:");
   m_mainwin.SetBufStr("Main:");
   Fresh();
 }
@@ -38,9 +39,10 @@ void TuiController::InitWin() {
   int width = winsz.ws_col;
   int height = winsz.ws_row;
 
-  m_cmdwin.Init(1, "Command", width - 2, 1, height - 1, 2);
-  m_statuswin.Init(1, "Status", 50, height - 5, 2, 2);
-  m_mainwin.Init(1, "Main", width - 54, height - 5, 2, 54);
+  m_cmdwin.Init(0, "Command", width - 2, 1, height - 1, 2);
+  m_statuswin.Init(1, "Status", 50, 10, 2, 2);
+  m_valuewin.Init(2, "Value", 50, height - 17, 14, 2);
+  m_mainwin.Init(3, "Main", width - 54, height - 5, 2, 54);
 }
 
 // Config the windows' sizes
@@ -58,7 +60,7 @@ void TuiController::Clear() {
 
 // Flesh the terminal
 void TuiController::Fresh() {
-  Window wins[3] = {m_cmdwin, m_statuswin, m_mainwin};
+  Window wins[4] = {m_cmdwin, m_statuswin, m_valuewin, m_mainwin};
   for (Window &iter : wins) {
     iter.PrintBuf();
   }

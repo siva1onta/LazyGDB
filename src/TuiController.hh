@@ -29,6 +29,7 @@ private:
   termios m_currterm;
   Window m_cmdwin;
   Window m_statuswin;
+  Window m_valuewin;
   Window m_mainwin;
 
 };

@@ -19,7 +19,15 @@ void Window::Init(int id, const char *name, int width, int height, int x, int y)
   m_y = y;
 }
 
-void SetSize();
+void Window::SetSize(int width, int height) {
+  m_width = width;
+  m_height = height;
+}
+
+void Window::SetPos(int x, int y) {
+  m_x = x;
+  m_y = y;
+}
 
 Window::~Window() {}
 
