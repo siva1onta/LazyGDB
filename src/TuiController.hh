@@ -2,7 +2,6 @@
 
 #include "Window.hh"
 
-#include <sys/ioctl.h>
 #include <termios.h>
 
 class TuiController final {
@@ -12,6 +11,7 @@ public:
   TuiController &operator=(const TuiController &) = delete;
 
   static TuiController &GetInstance();
+  void Clear();
   void Fresh();
   char GetKey();
 
