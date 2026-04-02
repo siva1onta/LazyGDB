@@ -1,8 +1,9 @@
-#include "TuiController.hh"
-#include "Utils.hh"
+#include "TuiController.h"
+#include "Utils.h"
 
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <fcntl.h>
 
 #include <cstdio>
 
@@ -18,7 +19,9 @@ TuiController::TuiController() {
   m_cmdwin.SetBufStr("Command:");
   m_statuswin.SetBufStr("Status:");
   m_valuewin.SetBufStr("Value:");
-  m_mainwin.SetBufStr("Main:");
+  // m_mainwin.SetBufStr("Main:");
+  int fd = open("/home/siva1onta/WORK/LazyGDB/src/main.cc", O_RDONLY);
+  m_mainwin.SetBufFd(fd, nullptr);
   Fresh();
 }
 

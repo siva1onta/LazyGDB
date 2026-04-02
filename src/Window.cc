@@ -1,5 +1,5 @@
-#include "Window.hh"
-#include "Utils.hh"
+#include "Window.h"
+#include "Utils.h"
 
 #include <unistd.h>
 

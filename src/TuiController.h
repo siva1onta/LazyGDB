@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Window.hh"
+#include "Window.h"
 
 #include <termios.h>
 

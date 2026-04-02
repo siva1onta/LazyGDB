@@ -1,4 +1,4 @@
-#include "TuiController.hh"
+#include "TuiController.h"
 
 #include <unistd.h>
 #include <termios.h>
