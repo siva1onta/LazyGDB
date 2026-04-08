@@ -6,7 +6,7 @@ SHARED_FLAGS = -shared
 
 ########################## Target ############################
 
-TUI_SRC := src/TuiController.cc src/Window.cc
+TUI_SRC := src/TuiController.cc src/Window.cc src/MainWindow.cc src/VariousWindow.cc src/CommandWindow.cc src/StatusWindow.cc
 TUI_OBJ := $(TUI_SRC:.cc=.o)
 TUI_LIB := libTui.so
 

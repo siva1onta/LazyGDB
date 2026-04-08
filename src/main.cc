@@ -9,19 +9,22 @@
 #include <cstring>
 
 int main(int argc, char **argv) {
-  TuiController &tui = TuiController::GetInstance();
+  TuiController *tui = TuiController::GetInstance();
 
   bool run = true;
+  char cmd;
   while (run) {
-    switch (tui.GetKey()) {
-      case 'q':
+    cmd = getchar();
+    switch (cmd) {
+      case 'q' :
         run = false;
         break;
-      default:
+      default :
+        tui->CommandChar(cmd);
         break;
     }
   }
 
-
+  TuiController::DestoryInstance();
   return 0;
 }

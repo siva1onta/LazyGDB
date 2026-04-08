@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TUICONTROLLER_H_
+#define TUICONTROLLER_H_
 
 #include "Window.h"
 
@@ -10,10 +11,11 @@ public:
   TuiController(const TuiController &) = delete;
   TuiController &operator=(const TuiController &) = delete;
 
-  static TuiController &GetInstance();
+  static TuiController *GetInstance();
+  static void DestoryInstance();
   void Clear();
   void Fresh();
-  char GetKey();
+  bool CommandChar(char cmd);
 
 private:
   TuiController();
@@ -24,12 +26,11 @@ private:
   void InitWin();
   void ConfigWinSz();
 
-  static TuiController m_instance;
+  static TuiController *m_instance;
   termios m_preterm;
   termios m_currterm;
-  Window m_cmdwin;
-  Window m_statuswin;
-  Window m_valuewin;
-  Window m_mainwin;
 
+  std::vector<Window *> m_windows;
 };
+
+#endif

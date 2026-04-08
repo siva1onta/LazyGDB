@@ -20,9 +20,10 @@ Window::Window(int id, const char *name) {
 
 Window::~Window() {}
 
-void Window::SetSizePos(int height, int width, int x, int y) {
-  m_height = height;
+void Window::SetSizePos(int width, int height, int margin, int x, int y) {
   m_width = width;
+  m_height = height;
+  m_margin = margin;
   m_x = x;
   m_y = y;
 }
@@ -59,26 +60,18 @@ void Window::Print() {
 }
 
 bool Window::CommandChar(char cmd) {
+  printf("From Window, id = %d, cmd = %c\n", m_id, cmd);
+  printf("From Window, id = %d, firstline = %d\n", m_id, m_firstline);
   switch (cmd) {
     case 'j' :
       MoveDown();
       return true;
-    case 10 :
-      for (int i = 0; i < 5; ++i) MoveDown();
-      return true;
     case 'k' :
       MoveUp();
-      return true;
-    case 11 :
-      for (int i = 0; i < 5; ++i) MoveUp();
       return true;
     default :
       return false;
   }
-}
-
-int Window::GetId() const {
-  return m_id;
 }
 
 bool Window::GetActive() const {
@@ -145,12 +138,12 @@ void Window::PrintNum() {
   char buf[MAXCOLUME];
   char fmt[MAXCOLUME];
 
-  snprintf(fmt, sizeof(fmt), "%%%dd", m_digit);
+  snprintf(fmt, sizeof(fmt), "%%%dd", m_margin - 4);
   for (int id = begin; id < end && id < m_line; ++id) {
     if (m_subline[id] == 0) {
       MoveCursor(m_x + (id - begin), m_y + 1);
       snprintf(buf, sizeof(buf), fmt, m_truthline[id]);
-      write(STDOUT_FILENO, buf, m_digit);
+      write(STDOUT_FILENO, buf, m_margin - 3);
     }
   }
 }
