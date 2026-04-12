@@ -1,9 +1,9 @@
 #include "TuiController.h"
-#include "Utils.h"
 #include "MainWindow.h"
 #include "VariousWindow.h"
 #include "StatusWindow.h"
 #include "CommandWindow.h"
+#include "FloatWindow.h"
 
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -11,6 +11,8 @@
 
 #include <cstdio>
 #include <cstring>
+
+#include "Ulogger.h"
 
 // Init
 TuiController *TuiController::m_instance = nullptr;
@@ -21,17 +23,23 @@ TuiController::TuiController() {
   InitWin();
 
   // Clear();
+  int fd = 0;
   m_windows[0]->SetBufStr("Command: h for help");
-  m_windows[1]->SetBufFd(open("/home/siva1onta/WORK/LazyGDB/data/test1.txt", O_RDONLY));
-  m_windows[2]->SetBufFd(open("/home/siva1onta/WORK/LazyGDB/data/test2.txt", O_RDONLY));
-  m_windows[3]->SetBufFd(open("/home/siva1onta/WORK/LazyGDB/data/test3.txt", O_RDONLY));
+  fd = open("/home/siva1onta/WORK/LazyGDB/data/test1.txt", O_RDONLY);
+  m_windows[1]->SetBufFd(fd);
+  close(fd);
+  fd = open("/home/siva1onta/WORK/LazyGDB/data/test2.txt", O_RDONLY);
+  m_windows[2]->SetBufFd(fd);
+  close(fd);
+  fd = open("/home/siva1onta/WORK/LazyGDB/data/test3.txt", O_RDONLY);
+  m_windows[3]->SetBufFd(fd);
+  close(fd);
   m_windows[3]->SetActive(true);
   Fresh();
 }
 
 //
 TuiController::~TuiController() {
-  MoveCursor(1, 1);
   Clear();
   RestoreTerm();
 }
@@ -87,48 +95,39 @@ void TuiController::Clear() {
 // Flesh the terminal
 void TuiController::Fresh() {
   Clear();
+  Window *activewindow = nullptr;
   for (Window *iter : m_windows) {
-    iter->Print();
+    if (iter->GetActive()) {
+      activewindow = iter;
+    } else {
+      iter->Print();
+    }
   }
-  MoveCursor(1, 1);
+  activewindow->Print();
 }
 
 bool TuiController::CommandChar(char cmd) {
-  printf("From TUI, cmd = %c\n", cmd);
+  for (Window *iter : m_windows) {
+    if (iter->GetActive()) {
+      if (iter->CommandChar(cmd)) {
+        Fresh();
+        return true;
+      }
+    }
+  }
   switch (cmd) {
     case '0' :
-      for (Window *iter : m_windows) {
-        iter->SetActive(cmd - '0' == iter->GetId());
-      }
-      Fresh();
-      break;
     case '1' :
-      for (Window *iter : m_windows) {
-        iter->SetActive(cmd - '0' == iter->GetId());
-      }
-      Fresh();
-      break;
     case '2' :
-      for (Window *iter : m_windows) {
-        iter->SetActive(cmd - '0' == iter->GetId());
-      }
-      Fresh();
-      break;
     case '3' :
       for (Window *iter : m_windows) {
         iter->SetActive(cmd - '0' == iter->GetId());
       }
       Fresh();
-      break;
+      return true;
     default :
-      for (Window *iter : m_windows) {
-        if (iter->GetActive()) iter->CommandChar(cmd);
-      }
-      Fresh();
-      break;
+      return false;
   }
-
-  return true;
 }
 
 void TuiController::SetupTerm() {

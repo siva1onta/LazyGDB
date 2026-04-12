@@ -8,7 +8,13 @@
 #include <cstdio>
 #include <cstring>
 
+#include "Ulogger.h"
+
 int main(int argc, char **argv) {
+  Ulogger *log = Ulogger::GetInstance();
+  log->SetLevel(Ulogger::DEBUG);
+  log->Open("./data/LazyGDB.log");
+
   TuiController *tui = TuiController::GetInstance();
 
   bool run = true;

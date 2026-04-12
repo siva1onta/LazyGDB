@@ -11,9 +11,6 @@ public:
 
   void Print() override;
   bool CommandChar(char cmd) override;
-
-protected:
-  void PrintBuf() override;
 };
 
 #endif

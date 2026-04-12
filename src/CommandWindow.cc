@@ -1,12 +1,17 @@
-#include "unistd.h"
-
 #include "CommandWindow.h"
-#include "cstring"
-#include "Utils.h"
+#include "FloatWindow.h"
+
+#include <unistd.h>
+#include <fcntl.h>
+
+#include "Ulogger.h"
 
 CommandWindow::CommandWindow(int id, const char *name) : Window(id, name) {
   m_margin = 0;
   m_digit = 0;
+  m_movetype = 0;
+  m_floatwindow = new FloatWindow(id, name);
+  m_floatwindow->SetSizePos(10, 40, 15, 35);
 }
 
 CommandWindow::~CommandWindow() {}
@@ -14,29 +19,30 @@ CommandWindow::~CommandWindow() {}
 void CommandWindow::Print() {
   PrintBnd();
   PrintBuf();
+  Debug("Command Window Print, ");
+  if (m_floatwindow->GetActive()) {
+    Debug("Command Float Window Print, ");
+    m_floatwindow->Print();
+  }
 }
 
 bool CommandWindow::CommandChar(char cmd) {
-  bool result = Window::CommandChar(cmd);
-
-  if (result == true) {
+  if (m_floatwindow->CommandChar(cmd)) {
+    return true;
+  }
+  if (Window::CommandChar(cmd) == true) {
     return true;
   }
 
-  return true;
-}
-
-void CommandWindow::PrintBuf() {
-  int begin = m_firstline;
-  int end = m_firstline + m_height;
-
-  char buf[MAXCOLUME];
-
-  for (int id = begin; id < end && id < m_line; ++id) {
-    memset(buf, ' ', m_width);
-    memcpy(buf, m_buf + m_offset[id], m_length[id]);
-
-    MoveCursor(m_x + (id - begin), m_y + m_margin);
-    write(STDOUT_FILENO, buf, m_width - m_margin);
+  int fd = 0;
+  switch (cmd) {
+    case 'h' :
+      fd = open("./share/Float_Command.txt", O_RDONLY);
+      m_floatwindow->SetBufFd(fd);
+      close(fd);
+      m_floatwindow->SetActive(true);
+      return true;
+    default :
+      return false;
   }
 }

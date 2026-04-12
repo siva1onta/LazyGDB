@@ -1,43 +1,29 @@
 ########################## Compiler ############################
 
 CXX = g++
-CXXFLAGS = -fPIC -Wall -g -O2 -pthread
-SHARED_FLAGS = -shared
+CXXFLAGS = -fPIC -Wall -O2 -pthread --std=c++20
+CXXFLAGS += $(shell Ulogger-config --cflags)
+LIBS = 
+LIBS += $(shell Ulogger-config --libs)
 
 ########################## Target ############################
 
-TUI_SRC := src/TuiController.cc src/Window.cc src/MainWindow.cc src/VariousWindow.cc src/CommandWindow.cc src/StatusWindow.cc
-TUI_OBJ := $(TUI_SRC:.cc=.o)
-TUI_LIB := libTui.so
-
-UTILS_SRC := src/Utils.cc
-UTILS_OBJ := $(UTILS_SRC:.cc=.o)
-UTILS_LIB := libUtils.so
-
-ALL_LIB := $(TUI_LIB) $(UTILS_LIB)
-LDLIBS := $(patsubst lib%.so, -l%, $(ALL_LIB))
-
+SRC := $(wildcard src/*.cc)
+OBJ := $(SRC:.cc=.o)
 EXE := LazyGDB
-MAIN_SRC := src/main.cc
-MAIN_OBJ := $(MAIN_SRC:.cc=.o)
 
 ########################## Build ############################
 
 all: $(EXE)
 
-$(EXE): $(MAIN_OBJ) $(ALL_LIB)
-	$(CXX) $(CXXFLAGS) -o $(EXE) $(MAIN_OBJ) -L. $(LDLIBS)
-$(TUI_LIB): $(TUI_OBJ)
-	$(CXX) $(CXXFLAGS) $(SHARED_FLAGS) -o $@ $^
-$(UTILS_LIB): $(UTILS_OBJ)
-	$(CXX) $(CXXFLAGS) $(SHARED_FLAGS) -o $@ $^
+$(EXE): $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 src/%.o: src/%.cc
 	$(CXX) $(CXXFLAGS) -c -o $@ $^
 
 clean:
 	rm -f $(EXE)
-	rm -f $(ALL_LIB)
-	rm -f src/*.o
+	rm -f $(OBJ)
 
 ########################## PHONY ############################
 

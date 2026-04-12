@@ -3,7 +3,7 @@
 
 #include "Window.h"
 
-class VariousWindow : public Window {
+class VariousWindow final : public Window {
 
 public:
   VariousWindow(int id, const char *name);
@@ -12,4 +12,4 @@ public:
   bool CommandChar(char cmd) override;
 };
 
-#endif
+#endif // VARIOUSWINDOW_H_
